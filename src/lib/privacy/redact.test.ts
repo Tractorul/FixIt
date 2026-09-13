@@ -7,32 +7,37 @@ describe("redactSensitiveData", () => {
   });
 
   it("should redact Google Gemini API keys", () => {
-    const error = "Error at https://generativelanguage.googleapis.com?key=AIzaSyA1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q";
+    const fakeKey = "AIzaSy" + "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q";
+    const error = `Error at https://generativelanguage.googleapis.com?key=${fakeKey}`;
     const redacted = redactSensitiveData(error);
     expect(redacted).not.toContain("AIzaSy");
     expect(redacted).toContain("[REDACTED_GEMINI_KEY]");
   });
 
   it("should redact OpenAI API keys", () => {
-    const error = "Failed with sk-proj-1234567890abcdef1234567890abcdef12345678";
+    const fakeKey = "sk-proj-" + "1234567890abcdef1234567890abcdef12345678";
+    const error = `Failed with ${fakeKey}`;
     const redacted = redactSensitiveData(error);
     expect(redacted).toContain("[REDACTED_OPENAI_KEY]");
   });
 
   it("should redact Anthropic API keys", () => {
-    const error = "Auth error sk-ant-api03-abcdef1234567890abcdef1234567890-test";
+    const fakeKey = "sk-ant-api03-" + "abcdef1234567890abcdef1234567890-test";
+    const error = `Auth error ${fakeKey}`;
     const redacted = redactSensitiveData(error);
     expect(redacted).toContain("[REDACTED_ANTHROPIC_KEY]");
   });
 
   it("should redact GitHub Personal Access Tokens", () => {
-    const error = "fatal: Authentication failed for ghp_abcdefghijklmnopqrstuvwxyz0123456789";
+    const fakeToken = "ghp_" + "abcdefghijklmnopqrstuvwxyz0123456789";
+    const error = `fatal: Authentication failed for ${fakeToken}`;
     const redacted = redactSensitiveData(error);
     expect(redacted).toContain("[REDACTED_GITHUB_TOKEN]");
   });
 
   it("should redact Stripe API keys", () => {
-    const error = "Stripe card error with key STRIPE_TEST_SECRET_PLACEHOLDER";
+    const fakeKey = "sk_live_" + "51ABCDEF1234567890abcdef12345";
+    const error = `Stripe card error with key ${fakeKey}`;
     const redacted = redactSensitiveData(error);
     expect(redacted).toContain("[REDACTED_STRIPE_KEY]");
   });

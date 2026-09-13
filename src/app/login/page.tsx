@@ -23,7 +23,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -49,24 +48,15 @@ export default function LoginPage() {
     }
 
     try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email: email.trim(),
-          password: password.trim(),
-        });
-        if (error) throw error;
-        setSuccessMessage("Account created! Check your email for confirmation or sign in.");
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password: password.trim(),
-        });
-        if (error) throw error;
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: password.trim(),
+      });
+      if (error) throw error;
 
-        // Redirect to dashboard
-        router.push("/");
-        router.refresh();
-      }
+      // Redirect to dashboard
+      router.push("/");
+      router.refresh();
     } catch (err: unknown) {
       setErrorMessage(err instanceof Error ? err.message : "Authentication failed.");
     } finally {
@@ -193,26 +183,16 @@ export default function LoginPage() {
               ) : (
                 <>
                   <ShieldCheck className="w-4 h-4" />
-                  <span>{isSignUp ? "Create Admin Account" : "Sign In with Password"}</span>
+                  <span>Sign In with Password</span>
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Toggle between Sign in & Sign up */}
-          <div className="pt-2 text-center text-xs text-zinc-500 border-t border-white/5">
-            <button
-              type="button"
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setErrorMessage(null);
-                setSuccessMessage(null);
-              }}
-              className="text-zinc-400 hover:text-sky-300 font-mono transition-colors"
-            >
-              {isSignUp ? "Already have an account? Sign In" : "First time? Click here to register admin"}
-            </button>
+          {/* Note indicating admin-only creation */}
+          <div className="pt-2 text-center text-[11px] text-zinc-500 border-t border-white/5 font-mono">
+            <span>Users are managed directly in your Supabase Dashboard</span>
           </div>
         </div>
 
