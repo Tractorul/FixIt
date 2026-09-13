@@ -22,6 +22,7 @@ import { AIStatusResponse } from "@/types";
 import Link from "next/link";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { ThemeSlider } from "./ThemeSlider";
 
 export type NavPage = "error" | "code" | "git" | "cli" | "docker" | "config" | "chat";
 
@@ -175,6 +176,9 @@ export function Header({
             {mobileMenuOpen ? <X className="w-3.5 h-3.5" /> : <Menu className="w-3.5 h-3.5 text-sky-400" />}
             <span className="capitalize">{activePage}</span>
           </button>
+
+          {/* Theme Slider (Light / System / Dark) */}
+          <ThemeSlider />
 
           {/* Status Indicator Pill */}
           <button

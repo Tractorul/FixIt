@@ -5,6 +5,7 @@ import { ToastProvider } from "@/components/Toast";
 import { KeyboardShortcutPanel } from "@/components/KeyboardShortcutPanel";
 import { ChatProvider } from "@/context/ChatContext";
 import { FloatingChatDrawer } from "@/components/FloatingChatDrawer";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,15 +32,37 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[#070a12] text-zinc-100 font-sans">
-        <ToastProvider>
-          <ChatProvider>
-            {children}
-            <KeyboardShortcutPanel />
-            <FloatingChatDrawer />
-          </ChatProvider>
-        </ToastProvider>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const stored = localStorage.getItem('fixit_theme_v1');
+                const isDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches) || (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.setAttribute('data-theme', 'light');
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col font-sans transition-colors duration-200">
+        <ThemeProvider>
+          <ToastProvider>
+            <ChatProvider>
+              {children}
+              <KeyboardShortcutPanel />
+              <FloatingChatDrawer />
+            </ChatProvider>
+          </ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

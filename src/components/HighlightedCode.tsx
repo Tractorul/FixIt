@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { Highlighter } from "shiki";
 import { SupportedLanguage } from "@/types";
+import { useTheme } from "@/context/ThemeContext";
 
 // Module-level highlighter singleton — shared across all component instances
 let highlighterPromise: Promise<Highlighter> | null = null;
@@ -11,7 +12,7 @@ function getHighlighter(): Promise<Highlighter> {
   if (!highlighterPromise) {
     highlighterPromise = import("shiki").then(({ createHighlighter }) =>
       createHighlighter({
-        themes: ["github-dark-dimmed"],
+        themes: ["github-dark-dimmed", "github-light"],
         langs: [
           "python",
           "javascript",
@@ -57,8 +58,11 @@ interface HighlightedCodeProps {
 }
 
 export function HighlightedCode({ code, language, className = "" }: HighlightedCodeProps) {
+  const { resolvedTheme } = useTheme();
   const [html, setHtml] = useState<string | null>(null);
   const abortRef = useRef(false);
+
+  const shikiTheme = resolvedTheme === "dark" ? "github-dark-dimmed" : "github-light";
 
   useEffect(() => {
     abortRef.current = false;
@@ -71,7 +75,7 @@ export function HighlightedCode({ code, language, className = "" }: HighlightedC
         try {
           const rendered = hl.codeToHtml(code, {
             lang,
-            theme: "github-dark-dimmed",
+            theme: shikiTheme,
           });
           if (mounted) setHtml(rendered);
         } catch {
@@ -85,7 +89,7 @@ export function HighlightedCode({ code, language, className = "" }: HighlightedC
     return () => {
       mounted = false;
     };
-  }, [code, language]);
+  }, [code, language, shikiTheme]);
 
   if (html) {
     return (
@@ -106,7 +110,9 @@ export function HighlightedCode({ code, language, className = "" }: HighlightedC
   // Fallback: plain monochrome code while highlighter loads or if it fails
   return (
     <pre
-      className={`overflow-x-auto leading-relaxed text-sm font-mono text-emerald-200 ${className}`}
+      className={`overflow-x-auto leading-relaxed text-sm font-mono ${
+        resolvedTheme === "dark" ? "text-emerald-200" : "text-emerald-800"
+      } ${className}`}
     >
       <code>{code}</code>
     </pre>
