@@ -2,37 +2,36 @@
 
 import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { Header } from "@/components/Header";
-import { ErrorInput } from "@/components/ErrorInput";
-import { AnalysisResult } from "@/components/AnalysisResult";
+import { CodeInput } from "@/components/CodeInput";
+import { CodeResult } from "@/components/CodeResult";
 import { HistoryPanel } from "@/components/HistoryPanel";
 import { StatusModal } from "@/components/StatusModal";
 import {
-  AnalyzeRequest,
-  FixItResponse,
-  HistoryItem,
+  CodeDebugRequest,
+  CodeDebugResponse,
+  SupportedLanguage,
   AIStatusResponse,
-  SupportedOS,
-  SupportedShell,
 } from "@/types";
 import {
-  saveHistoryItem,
   removeHistoryItem,
   clearAllHistory,
   subscribeHistory,
   getHistorySnapshot,
   getHistoryServerSnapshot,
 } from "@/lib/storage";
-import { AlertCircle, X, Sparkles, Terminal, Code2, ArrowRight } from "lucide-react";
+import { AlertCircle, X, Sparkles, Terminal, Code2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export default function Home() {
-  const [errorText, setErrorText] = useState("");
-  const [os, setOS] = useState<SupportedOS>("Unspecified");
-  const [shell, setShell] = useState<SupportedShell>("Unspecified");
+export default function CodeDebugPage() {
+  const router = useRouter();
+  const [code, setCode] = useState("");
+  const [language, setLanguage] = useState<SupportedLanguage>("Python");
+  const [additionalContext, setAdditionalContext] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [result, setResult] = useState<FixItResponse | null>(null);
+  const [result, setResult] = useState<CodeDebugResponse | null>(null);
 
   const [status, setStatus] = useState<AIStatusResponse | null>(null);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
@@ -42,9 +41,7 @@ export default function Home() {
     getHistorySnapshot,
     getHistoryServerSnapshot
   );
-  const [selectedHistoryId, setSelectedHistoryId] = useState<string | undefined>();
 
-  // Fetch AI backend status on mount & setup global shortcuts
   useEffect(() => {
     async function fetchStatus() {
       try {
@@ -54,12 +51,12 @@ export default function Home() {
           setStatus(data);
         }
       } catch {
-        // ignore status failure
+        // ignore
       }
     }
     fetchStatus();
 
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsStatusOpen(false);
         setIsHistoryOpen(false);
@@ -69,27 +66,27 @@ export default function Home() {
       }
     };
 
-    window.addEventListener("keydown", handleGlobalKeyDown);
-    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleAnalyze = async () => {
-    if (!errorText.trim()) {
-      setApiError("Please paste an error message or stack trace before analyzing.");
+  const handleAnalyzeCode = async () => {
+    if (!code.trim()) {
+      setApiError("Please paste a code snippet before analyzing.");
       return;
     }
 
     setIsLoading(true);
     setApiError(null);
 
-    const payload: AnalyzeRequest = {
-      errorText: errorText.trim(),
-      os,
-      shell,
+    const payload: CodeDebugRequest = {
+      code: code.trim(),
+      language,
+      additionalContext: additionalContext.trim() || undefined,
     };
 
     try {
-      const res = await fetch("/api/analyze", {
+      const res = await fetch("/api/debug-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -98,48 +95,22 @@ export default function Home() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || `Server responded with error status ${res.status}`);
+        throw new Error(data.error || `Server error: ${res.status}`);
       }
 
-      const analyzedResponse: FixItResponse = data;
-      setResult(analyzedResponse);
-
-      // Save to localStorage history
-      const updatedHistory = saveHistoryItem(errorText, analyzedResponse, os, shell);
-      setSelectedHistoryId(updatedHistory[0]?.id);
+      setResult(data);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to communicate with analysis server.";
+      const msg = err instanceof Error ? err.message : "Failed to communicate with code analysis server.";
       setApiError(msg);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSelectHistory = (item: HistoryItem) => {
-    setErrorText(item.rawError);
-    if (item.os) setOS(item.os);
-    if (item.shell) setShell(item.shell);
-    setResult(item.result);
-    setSelectedHistoryId(item.id);
-    setApiError(null);
-  };
-
-  const handleDeleteHistory = (id: string) => {
-    removeHistoryItem(id);
-    if (selectedHistoryId === id) {
-      setSelectedHistoryId(undefined);
-    }
-  };
-
-  const handleClearAllHistory = () => {
-    clearAllHistory();
-    setSelectedHistoryId(undefined);
-  };
-
   const handleNewAnalysis = () => {
-    setErrorText("");
+    setCode("");
     setResult(null);
-    setSelectedHistoryId(undefined);
+    setAdditionalContext("");
     setApiError(null);
   };
 
@@ -153,37 +124,43 @@ export default function Home() {
         onToggleHistory={() => setIsHistoryOpen(!isHistoryOpen)}
         onNewAnalysis={handleNewAnalysis}
         isHistoryOpen={isHistoryOpen}
+        activePage="code"
       />
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Hero title banner */}
-        <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="flex items-center justify-center gap-2">
-            <Link
-              href="/code-debug"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-mono transition-all group"
-            >
-              <Code2 className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Need to debug a code snippet instead? Try Code Doctor</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
+        {/* Navigation Breadcrumb / Switcher */}
+        <div className="flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-sky-300 transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Error Log Diagnosis</span>
+          </Link>
+        </div>
+
+        {/* Hero Title Banner */}
+        <div className="text-center space-y-2 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono mb-1">
+            <Code2 className="w-3.5 h-3.5" />
+            <span>Code Doctor & Snippet Debugger</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
-            Diagnose Linux & Code Errors Safely
+            Detect & Fix Code Snippet Bugs
           </h1>
           <p className="text-sm text-zinc-400">
-            Paste any terminal traceback, compiler error, or package manager failure. FixIt pinpoints what happened, why, and offers vetted, non-destructive commands.
+            Select your language, paste your code snippet, and FixIt pinpoints the syntax error, type mismatch, or logic flaw and writes the corrected replacement code.
           </p>
         </div>
 
-        {/* API Error Alert Banner */}
+        {/* API Error Alert */}
         {apiError && (
           <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-start justify-between gap-3 text-sm text-rose-200 shadow-lg animate-in fade-in duration-200">
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <span className="font-semibold text-rose-300">Analysis Error</span>
+                <span className="font-semibold text-rose-300">Code Analysis Error</span>
                 <p className="text-xs text-rose-200/90 leading-relaxed">{apiError}</p>
               </div>
             </div>
@@ -197,34 +174,34 @@ export default function Home() {
           </div>
         )}
 
-        {/* Top Section: Error Input */}
+        {/* Code Input Card */}
         <section className="glass-panel p-5 sm:p-6 rounded-2xl shadow-xl space-y-4">
-          <ErrorInput
-            errorText={errorText}
-            onChangeErrorText={setErrorText}
-            os={os}
-            shell={shell}
-            onChangeOS={setOS}
-            onChangeShell={setShell}
-            onAnalyze={handleAnalyze}
+          <CodeInput
+            code={code}
+            onChangeCode={setCode}
+            language={language}
+            onChangeLanguage={setLanguage}
+            additionalContext={additionalContext}
+            onChangeAdditionalContext={setAdditionalContext}
+            onAnalyze={handleAnalyzeCode}
             isLoading={isLoading}
-            onClear={() => setErrorText("")}
+            onClear={() => {
+              setCode("");
+              setAdditionalContext("");
+            }}
           />
         </section>
 
-        {/* Results Section */}
+        {/* Code Result */}
         {result && (
           <section className="space-y-4 pt-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-sky-400" />
-                <h2 className="text-lg font-bold text-white tracking-tight">
-                  Diagnostic & Resolution Plan
-                </h2>
-              </div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-sky-400" />
+              <h2 className="text-lg font-bold text-white tracking-tight">
+                Bug Diagnosis & Corrected Code
+              </h2>
             </div>
-
-            <AnalysisResult result={result} />
+            <CodeResult result={result} originalCode={code} />
           </section>
         )}
       </main>
@@ -234,10 +211,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 font-mono">
             <Terminal className="w-3.5 h-3.5 text-sky-400" />
-            <span>FixIt • Linux-First Error Diagnostic</span>
+            <span>FixIt • Code Doctor & Linux Error Diagnostic</span>
           </div>
           <div className="text-zinc-500 text-[11px]">
-            Safety First • Commands are for manual review only • No automated execution
+            Safety First • Always review code modifications before deploying
           </div>
         </div>
       </footer>
@@ -247,13 +224,14 @@ export default function Home() {
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
         items={historyItems}
-        onSelect={handleSelectHistory}
-        onDelete={handleDeleteHistory}
-        onClearAll={handleClearAllHistory}
-        selectedId={selectedHistoryId}
+        onSelect={(item) => {
+          router.push(`/?historyId=${item.id}`);
+        }}
+        onDelete={removeHistoryItem}
+        onClearAll={clearAllHistory}
       />
 
-      {/* Configuration / AI Status Modal */}
+      {/* AI Status Modal */}
       <StatusModal
         isOpen={isStatusOpen}
         onClose={() => setIsStatusOpen(false)}
