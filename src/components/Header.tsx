@@ -23,7 +23,7 @@ import Link from "next/link";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-export type NavPage = "error" | "code" | "git" | "cli" | "docker" | "config";
+export type NavPage = "error" | "code" | "git" | "cli" | "docker" | "config" | "chat";
 
 interface HeaderProps {
   status: AIStatusResponse | null;
@@ -38,6 +38,7 @@ interface HeaderProps {
 const NAV_ITEMS = [
   { id: "error" as const, label: "Error Diagnosis", href: "/", icon: Terminal, color: "text-sky-400" },
   { id: "code" as const, label: "Code Doctor", href: "/code-debug", icon: Code2, color: "text-indigo-400" },
+  { id: "chat" as const, label: "AI Chat", href: "/chat", icon: Sparkles, color: "text-purple-400" },
   { id: "git" as const, label: "Git Wizard", href: "/git-wizard", icon: GitBranch, color: "text-rose-400" },
   { id: "cli" as const, label: "CLI Copilot", href: "/cli-copilot", icon: Bot, color: "text-amber-400" },
   { id: "docker" as const, label: "Docker Doctor", href: "/docker-doctor", icon: Container, color: "text-cyan-400" },

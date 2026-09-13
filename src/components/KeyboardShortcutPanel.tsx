@@ -39,10 +39,11 @@ export function KeyboardShortcutPanel() {
   }, [isOpen]);
 
   const shortcuts = [
-    { keys: ["Ctrl", "Enter"], description: "Analyze error / debug code" },
+    { keys: ["Ctrl", "Enter"], description: "Analyze error / execute tool" },
+    { keys: ["Ctrl", "J"], description: "Toggle Gemini AI Copilot drawer" },
     { keys: ["Ctrl", "H"], description: "Toggle history panel" },
-    { keys: ["Esc"], description: "Close any open panel" },
-    { keys: ["?"], description: "Show / hide this panel" },
+    { keys: ["Esc"], description: "Close any open panel or drawer" },
+    { keys: ["?"], description: "Show / hide keyboard shortcuts" },
   ];
 
   return (

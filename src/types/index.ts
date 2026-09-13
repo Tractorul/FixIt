@@ -199,3 +199,27 @@ export interface ConfigConverterResponse {
   maskedSecretsCount: number;
 }
 
+// ============================================================
+// 5. Gemini Multi-Turn Chat & Copilot Types
+// ============================================================
+export interface ChatMessage {
+  id: string;
+  role: "user" | "model";
+  content: string;
+  timestamp: number;
+}
+
+export interface ChatRequest {
+  messages: Array<{
+    role: "user" | "model";
+    content: string;
+  }>;
+  context?: string;
+}
+
+export interface ChatResponse {
+  reply: string;
+  model?: string;
+}
+
+

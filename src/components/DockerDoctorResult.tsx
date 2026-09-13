@@ -9,11 +9,13 @@ import {
   Terminal,
   ShieldCheck,
   Layers,
+  MessageSquare,
 } from "lucide-react";
 import { DockerDoctorResponse } from "@/types";
 import { useToast } from "@/components/Toast";
 import { HighlightedCode } from "./HighlightedCode";
 import { CommandCard } from "./CommandCard";
+import { useChat } from "@/context/ChatContext";
 
 interface DockerDoctorResultProps {
   result: DockerDoctorResponse;
@@ -21,6 +23,7 @@ interface DockerDoctorResultProps {
 
 export function DockerDoctorResult({ result }: DockerDoctorResultProps) {
   const { showToast } = useToast();
+  const { openWithContext } = useChat();
   const [activeTab, setActiveTab] = useState<"dockerfile" | "compose" | "dockerignore">("dockerfile");
   const [copiedDockerfile, setCopiedDockerfile] = useState(false);
   const [copiedCompose, setCopiedCompose] = useState(false);
@@ -73,6 +76,19 @@ export function DockerDoctorResult({ result }: DockerDoctorResultProps) {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const context = `Docker Architecture Summary: ${result.summary}\nDockerfile:\n${result.dockerfile}\n\nDocker Compose:\n${result.dockerCompose || "N/A"}`;
+              openWithContext(context, "Can you help me customize and optimize this Docker configuration?");
+            }}
+            type="button"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border bg-cyan-500/15 hover:bg-cyan-500/25 border-cyan-500/40 text-cyan-300 transition-colors"
+            title="Open Gemini AI copilot with this Docker context"
+          >
+            <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Ask Gemini</span>
+          </button>
+
           <button
             onClick={() => downloadFile(result.dockerfile, "Dockerfile")}
             type="button"

@@ -10,9 +10,11 @@ import {
   LifeBuoy,
   Info,
   Terminal,
+  MessageSquare,
 } from "lucide-react";
 import { GitWizardResponse } from "@/types";
 import { useToast } from "@/components/Toast";
+import { useChat } from "@/context/ChatContext";
 
 interface GitWizardResultProps {
   result: GitWizardResponse;
@@ -20,6 +22,7 @@ interface GitWizardResultProps {
 
 export function GitWizardResult({ result }: GitWizardResultProps) {
   const { showToast } = useToast();
+  const { openWithContext } = useChat();
   const [copiedStep, setCopiedStep] = useState<number | null>(null);
   const [copiedAll, setCopiedAll] = useState(false);
 
@@ -66,9 +69,23 @@ export function GitWizardResult({ result }: GitWizardResultProps) {
           </div>
         </div>
 
-        <button
-          onClick={copyAllScript}
-          type="button"
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const context = `Git Scenario: ${result.scenarioTitle}\nSummary: ${result.summary}\nWhy it works: ${result.whyThisWorks}\nSteps:\n${result.steps.map((s) => `${s.stepNumber}. ${s.command} (${s.title})`).join("\n")}`;
+              openWithContext(context, "Can you guide me through executing these Git recovery steps safely?");
+            }}
+            type="button"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border bg-rose-500/15 hover:bg-rose-500/25 border-rose-500/40 text-rose-300 transition-colors"
+            title="Open Gemini AI copilot with this Git context"
+          >
+            <MessageSquare className="w-3.5 h-3.5 text-rose-400" />
+            <span>Ask Gemini</span>
+          </button>
+
+          <button
+            onClick={copyAllScript}
+            type="button"
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
             copiedAll
               ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
@@ -88,6 +105,7 @@ export function GitWizardResult({ result }: GitWizardResultProps) {
           )}
         </button>
       </div>
+    </div>
 
       {/* Summary and Why it Works */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

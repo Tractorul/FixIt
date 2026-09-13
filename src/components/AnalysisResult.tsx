@@ -13,10 +13,12 @@ import {
   Download,
   Copy,
   FileText,
+  MessageSquare,
 } from "lucide-react";
 import { FixItResponse } from "@/types";
 import { CommandCard } from "./CommandCard";
 import { useToast } from "@/components/Toast";
+import { useChat } from "@/context/ChatContext";
 
 interface AnalysisResultProps {
   result: FixItResponse;
@@ -29,6 +31,7 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
   const [downloadedScript, setDownloadedScript] = useState(false);
   const [downloadedAnsible, setDownloadedAnsible] = useState(false);
   const { showToast } = useToast();
+  const { openWithContext } = useChat();
 
   const getConfidenceBadge = (confidence: string) => {
     switch (confidence) {
@@ -224,6 +227,19 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {getConfidenceBadge(result.confidence)}
+
+          <button
+            onClick={() => {
+              const contextSummary = `Error Technology: ${result.technology}\nSummary: ${result.summary}\nCause: ${result.cause}\nFix: ${result.fix}`;
+              openWithContext(contextSummary, "Can you explain this diagnosis in more detail and help me troubleshoot further?");
+            }}
+            type="button"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border bg-sky-500/15 hover:bg-sky-500/25 border-sky-500/40 text-sky-300 transition-colors"
+            title="Open Gemini AI copilot with this error context"
+          >
+            <MessageSquare className="w-3.5 h-3.5 text-sky-400" />
+            <span>Ask Gemini</span>
+          </button>
 
           <button
             onClick={downloadRemediationScript}

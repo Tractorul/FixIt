@@ -13,11 +13,13 @@ import {
   Copy,
   Code2,
   Sparkles,
+  MessageSquare,
 } from "lucide-react";
 import { CodeDebugResponse } from "@/types";
 import { CommandCard } from "./CommandCard";
 import { useToast } from "@/components/Toast";
 import { HighlightedCode } from "./HighlightedCode";
+import { useChat } from "@/context/ChatContext";
 
 interface CodeResultProps {
   result: CodeDebugResponse;
@@ -25,6 +27,8 @@ interface CodeResultProps {
 }
 
 export function CodeResult({ result, originalCode }: CodeResultProps) {
+  const { openWithContext } = useChat();
+
   const [copiedFixed, setCopiedFixed] = useState(false);
   const [copiedMarkdown, setCopiedMarkdown] = useState(false);
   const [downloadedFile, setDownloadedFile] = useState(false);
@@ -145,6 +149,19 @@ ${result.bestPractices.map((b) => `- ${b}`).join("\n")}
         </div>
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <button
+            onClick={() => {
+              const context = `Language: ${result.language}\nError Type: ${result.errorType}\nDetected Error: ${result.detectedError}\nRoot Cause: ${result.rootCause}\nFixed Code:\n${result.fixedCode}`;
+              openWithContext(context, "Can you explain this code bug and help me write unit tests for it?");
+            }}
+            type="button"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border bg-sky-500/15 hover:bg-sky-500/25 border-sky-500/40 text-sky-300 transition-colors"
+            title="Open Gemini AI copilot with this code context"
+          >
+            <MessageSquare className="w-3.5 h-3.5 text-sky-400" />
+            <span>Ask Gemini</span>
+          </button>
+
           <button
             onClick={downloadFixedFile}
             type="button"

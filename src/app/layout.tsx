@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/Toast";
 import { KeyboardShortcutPanel } from "@/components/KeyboardShortcutPanel";
+import { ChatProvider } from "@/context/ChatContext";
+import { FloatingChatDrawer } from "@/components/FloatingChatDrawer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,8 +34,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#070a12] text-zinc-100 font-sans">
         <ToastProvider>
-          {children}
-          <KeyboardShortcutPanel />
+          <ChatProvider>
+            {children}
+            <KeyboardShortcutPanel />
+            <FloatingChatDrawer />
+          </ChatProvider>
         </ToastProvider>
       </body>
     </html>

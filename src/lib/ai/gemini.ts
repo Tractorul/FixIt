@@ -1,4 +1,4 @@
-import { AnalyzeRequest, FixItResponse, CodeDebugRequest, CodeDebugResponse } from "@/types";
+import { AnalyzeRequest, FixItResponse, CodeDebugRequest, CodeDebugResponse, ChatRequest, ChatResponse } from "@/types";
 import { sanitizeAndInspectCommands } from "./safety";
 
 export async function analyzeErrorWithGemini(
@@ -247,3 +247,74 @@ Return JSON with this exact schema:
     confidence,
   };
 }
+
+export async function chatWithGemini(
+  request: ChatRequest,
+  apiKey: string,
+  modelName: string = "gemini-2.5-flash"
+): Promise<ChatResponse> {
+  const cleanModel = modelName.trim() || "gemini-2.5-flash";
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${cleanModel}:generateContent?key=${apiKey.trim()}`;
+
+  const systemPrompt = `You are FixIt AI Copilot, a principal software architect, senior DevOps engineer, and expert Linux system administrator.
+You assist developers with programming, Linux troubleshooting, containerization, debugging, scripting, and system architecture.
+
+GUIDELINES:
+1. Provide concise, clear, production-grade answers.
+2. Format code and commands in Markdown code blocks with language identifiers.
+3. If commands could be potentially destructive (e.g., rm, dd, mkfs, drop database, chmod 777), explicitly warn the user.
+4. If contextual diagnostic information or previous error analysis was provided, tailor your responses to that context.`;
+
+  // Map messages to Gemini API format (role: "user" | "model")
+  const contents = request.messages.map((m) => ({
+    role: m.role === "user" ? "user" : "model",
+    parts: [{ text: m.content }],
+  }));
+
+  // If there's extra context provided, prepend it to the first user message or as a system prompt addition
+  if (request.context && contents.length > 0 && contents[0].role === "user") {
+    contents[0].parts[0].text = `[Current Context / Diagnostic Report]:\n${request.context}\n\n${contents[0].parts[0].text}`;
+  }
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      systemInstruction: {
+        parts: [{ text: systemPrompt }],
+      },
+      contents,
+      generationConfig: {
+        temperature: 0.4,
+        maxOutputTokens: 3000,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    let errorMessage = errorText;
+    try {
+      const errJson = JSON.parse(errorText);
+      errorMessage = errJson.error?.message || errorText;
+    } catch {
+      // ignore
+    }
+    throw new Error(`Google Gemini API error (${response.status}): ${errorMessage}`);
+  }
+
+  const data = await response.json();
+  const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!rawText) {
+    throw new Error("Gemini returned an empty response or candidate was blocked.");
+  }
+
+  return {
+    reply: rawText,
+    model: cleanModel,
+  };
+}
+
