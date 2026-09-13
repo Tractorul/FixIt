@@ -88,26 +88,26 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
   return (
     <div className={`flex gap-3 text-xs ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
-        <div className="w-7 h-7 rounded-lg bg-sky-500/20 border border-sky-500/30 flex items-center justify-center shrink-0 text-sky-400 mt-0.5">
+        <div className="w-7 h-7 rounded-lg bg-sky-100 dark:bg-sky-500/20 border border-sky-200 dark:border-sky-500/30 flex items-center justify-center shrink-0 text-sky-600 dark:text-sky-400 mt-0.5">
           <Bot className="w-4 h-4" />
         </div>
       )}
 
       <div
-        className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-lg ${
+        className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-md ${
           isUser
             ? "bg-gradient-to-r from-sky-600 to-blue-600 text-white rounded-tr-sm"
-            : "bg-[#090e18] border border-white/10 text-zinc-200 rounded-tl-sm"
+            : "bg-white dark:bg-[#090e18] border border-slate-200 dark:border-white/10 text-slate-800 dark:text-zinc-200 rounded-tl-sm shadow-xs dark:shadow-none"
         }`}
       >
         <div className="space-y-1">{renderContent(message.content)}</div>
-        <div className={`text-[10px] mt-1.5 font-mono ${isUser ? "text-sky-200/70 text-right" : "text-zinc-500"}`}>
+        <div className={`text-[10px] mt-1.5 font-mono ${isUser ? "text-sky-200/80 text-right" : "text-slate-500 dark:text-zinc-500"}`}>
           {new Date(message.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         </div>
       </div>
 
       {isUser && (
-        <div className="w-7 h-7 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center shrink-0 text-zinc-300 mt-0.5">
+        <div className="w-7 h-7 rounded-lg bg-slate-200 dark:bg-white/10 border border-slate-300 dark:border-white/15 flex items-center justify-center shrink-0 text-slate-700 dark:text-zinc-300 mt-0.5">
           <User className="w-4 h-4" />
         </div>
       )}

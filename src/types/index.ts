@@ -144,41 +144,7 @@ export interface CliCopilotResponse {
 }
 
 // ============================================================
-// 3. Docker & Compose Doctor Types
-// ============================================================
-export type DockerMode = "generate" | "debug";
-export type DockerFramework =
-  | "Next.js"
-  | "Node.js (Express/Nest)"
-  | "Python (FastAPI/Flask)"
-  | "Go"
-  | "Rust"
-  | "Java (Spring)"
-  | "PHP (Laravel)"
-  | "Static HTML/Nginx"
-  | "Custom";
-
-export interface DockerDoctorRequest {
-  mode: DockerMode;
-  framework?: DockerFramework;
-  descriptionOrError: string;
-  existingDockerfile?: string;
-  existingCompose?: string;
-}
-
-export interface DockerDoctorResponse {
-  mode: DockerMode;
-  summary: string;
-  dockerfile: string;
-  dockerCompose?: string;
-  dockerIgnore?: string;
-  keyImprovements: string[];
-  runCommands: FixItCommand[];
-  confidence: ConfidenceLevel;
-}
-
-// ============================================================
-// 4. Config & Environment Transformer Types
+// 3. Config & Environment Transformer Types
 // ============================================================
 export type ConfigFormat = "env" | "json" | "yaml" | "toml" | "docker-compose-env";
 

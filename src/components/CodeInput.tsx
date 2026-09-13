@@ -172,8 +172,8 @@ export function CodeInput({
     <div className="space-y-4">
       {/* Language Selector */}
       <div className="space-y-2">
-        <label className="text-xs uppercase tracking-wider text-zinc-400 font-mono flex items-center gap-1.5">
-          <Code2 className="w-3.5 h-3.5 text-sky-400" />
+        <label className="text-xs uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-mono flex items-center gap-1.5 font-medium">
+          <Code2 className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
           Select Language
         </label>
         <div className="flex flex-wrap gap-1.5">
@@ -186,8 +186,8 @@ export function CodeInput({
                 onClick={() => onChangeLanguage(lang)}
                 className={`px-3 py-1.5 text-xs rounded-lg font-mono transition-all ${
                   isSelected
-                    ? "bg-sky-500/20 text-sky-300 border border-sky-500/40 font-semibold shadow-sm"
-                    : "bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-zinc-200 border border-transparent"
+                    ? "bg-sky-100 text-sky-800 border border-sky-300 dark:bg-sky-500/20 dark:text-sky-300 dark:border-sky-500/40 font-semibold shadow-xs"
+                    : "bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200/80 dark:border-transparent"
                 }`}
               >
                 {lang}
@@ -199,12 +199,12 @@ export function CodeInput({
 
       {/* Quick Example Snippets */}
       <div className="space-y-1.5 pt-1">
-        <div className="flex items-center justify-between text-xs text-zinc-400">
-          <span className="flex items-center gap-1.5 text-zinc-400">
-            <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-zinc-400">
+          <span className="flex items-center gap-1.5 font-medium">
+            <Sparkles className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
             Quick Buggy Examples
           </span>
-          <span className="text-[11px] text-zinc-500 hidden sm:inline">
+          <span className="text-[11px] text-slate-500 dark:text-zinc-500 hidden sm:inline">
             Load sample buggy snippet
           </span>
         </div>
@@ -219,7 +219,7 @@ export function CodeInput({
                 onChangeAdditionalContext(ex.context);
                 setShowContextInput(Boolean(ex.context));
               }}
-              className="text-xs px-2.5 py-1 rounded-md bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/5 hover:border-white/15 transition-all text-left font-mono"
+              className="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-zinc-900/90 dark:hover:bg-zinc-800 text-slate-700 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white border border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/15 transition-all text-left font-mono"
             >
               {ex.label}
             </button>
@@ -234,14 +234,14 @@ export function CodeInput({
         onDrop={handleDrop}
         className={`relative rounded-xl border transition-all ${
           isDragging
-            ? "border-sky-400 bg-sky-950/20 ring-2 ring-sky-500/30"
-            : "border-white/10 bg-[#070b14]/90 focus-within:border-sky-500/50 focus-within:ring-1 focus-within:ring-sky-500/30"
+            ? "border-sky-500 bg-sky-50/50 dark:bg-sky-950/20 ring-2 ring-sky-500/30"
+            : "border-slate-200 dark:border-white/10 bg-white dark:bg-[#070b14]/90 focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-500/20"
         }`}
       >
         {/* Top bar with file upload & clear */}
-        <div className="flex items-center justify-between px-3.5 py-2 border-b border-white/5 bg-white/[0.02]">
-          <div className="flex items-center gap-2 text-xs text-zinc-400 font-mono">
-            <FileCode className="w-3.5 h-3.5 text-sky-400" />
+        <div className="flex items-center justify-between px-3.5 py-2 border-b border-slate-100 dark:border-white/5 bg-slate-50/60 dark:bg-white/[0.02]">
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-mono">
+            <FileCode className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
             <span>snippet.{language.toLowerCase().replace(/[^a-z]/g, "") || "txt"}</span>
           </div>
 
@@ -256,7 +256,7 @@ export function CodeInput({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-1.5 px-2 py-1 text-xs text-zinc-400 hover:text-zinc-200 rounded hover:bg-white/5 transition-colors"
+              className="flex items-center gap-1.5 px-2 py-1 text-xs text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 rounded hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
               title="Upload code file"
             >
               <UploadCloud className="w-3.5 h-3.5" />
@@ -267,7 +267,7 @@ export function CodeInput({
               <button
                 type="button"
                 onClick={onClear}
-                className="flex items-center gap-1 px-2 py-1 text-xs text-zinc-400 hover:text-rose-300 rounded hover:bg-rose-500/10 transition-colors"
+                className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-300 rounded hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"
                 title="Clear code"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -285,26 +285,26 @@ export function CodeInput({
           onKeyDown={handleKeyDown}
           placeholder={`Paste your buggy ${language} code snippet here...`}
           rows={9}
-          className="w-full bg-transparent px-4 py-3 text-sm font-mono text-zinc-100 placeholder:text-zinc-600 focus:outline-none resize-y min-h-[200px] leading-relaxed"
+          className="w-full bg-transparent px-4 py-3 text-sm font-mono text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:outline-none resize-y min-h-[200px] leading-relaxed"
           disabled={isLoading}
         />
 
         {/* Drag & Drop Visual Overlay */}
         {isDragging && (
-          <div className="absolute inset-0 bg-sky-950/80 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-2 pointer-events-none text-sky-200">
-            <FileCode className="w-10 h-10 text-sky-400 animate-bounce" />
+          <div className="absolute inset-0 bg-sky-50/90 dark:bg-sky-950/80 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center gap-2 pointer-events-none text-sky-800 dark:text-sky-200">
+            <FileCode className="w-10 h-10 text-sky-500 dark:text-sky-400 animate-bounce" />
             <p className="text-sm font-medium">Drop code file here to load</p>
           </div>
         )}
 
         {/* Bottom indicator bar */}
-        <div className="flex items-center justify-between px-4 py-2 border-t border-white/5 text-[11px] text-zinc-500 font-mono">
+        <div className="flex items-center justify-between px-4 py-2 border-t border-slate-100 dark:border-white/5 text-[11px] text-slate-500 dark:text-zinc-500 font-mono">
           <div>
             <span>{code.length.toLocaleString()}</span> chars
           </div>
-          <div className="hidden sm:block text-zinc-500">
-            Press <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-zinc-300">Ctrl</kbd> +{" "}
-            <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-zinc-300">Enter</kbd> to debug
+          <div className="hidden sm:block text-slate-500 dark:text-zinc-500">
+            Press <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-zinc-300">Ctrl</kbd> +{" "}
+            <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-zinc-300">Enter</kbd> to debug
           </div>
         </div>
       </div>
@@ -314,7 +314,7 @@ export function CodeInput({
         <button
           type="button"
           onClick={() => setShowContextInput(!showContextInput)}
-          className="text-xs text-sky-400 hover:text-sky-300 flex items-center gap-1 font-mono transition-colors"
+          className="text-xs text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 flex items-center gap-1 font-mono transition-colors"
         >
           <span>{showContextInput ? "− Hide expected behavior / notes" : "+ Add expected behavior / context (optional)"}</span>
         </button>
@@ -325,7 +325,7 @@ export function CodeInput({
             value={additionalContext}
             onChange={(e) => onChangeAdditionalContext(e.target.value)}
             placeholder="e.g. Expected function to return a sorted array without mutating input..."
-            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-sky-500/50"
+            className="w-full bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs font-mono text-slate-900 dark:text-zinc-200 placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-sky-500"
           />
         )}
       </div>
@@ -335,10 +335,10 @@ export function CodeInput({
         type="button"
         onClick={onAnalyze}
         disabled={isLoading || !code.trim()}
-        className={`w-full flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all shadow-lg ${
+        className={`w-full flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all shadow-md ${
           isLoading || !code.trim()
-            ? "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-white/5"
-            : "bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white border border-sky-400/30 hover:shadow-sky-500/20"
+            ? "bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-500 cursor-not-allowed border border-slate-200 dark:border-white/5"
+            : "bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-sky-500/20 hover:shadow-sky-500/30"
         }`}
       >
         {isLoading ? (
@@ -350,9 +350,9 @@ export function CodeInput({
           </>
         ) : (
           <>
-            <Sparkles className="w-4 h-4 text-sky-200" />
+            <Sparkles className="w-4 h-4 text-sky-100" />
             <span>Debug & Fix Code</span>
-            <CornerDownLeft className="w-4 h-4 opacity-70 ml-1 hidden sm:inline" />
+            <CornerDownLeft className="w-4 h-4 opacity-80 ml-1 hidden sm:inline" />
           </>
         )}
       </button>

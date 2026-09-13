@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useSyncExternalStore } from "react";
-import { Header } from "@/components/Header";
+import { AppShell } from "@/components/AppShell";
 import { CodeInput } from "@/components/CodeInput";
 import { CodeResult } from "@/components/CodeResult";
 import { CodeDebugHistoryPanel } from "@/components/CodeDebugHistoryPanel";
@@ -21,7 +21,7 @@ import {
   getCodeDebugSnapshot,
   getCodeDebugServerSnapshot,
 } from "@/lib/storage";
-import { AlertCircle, X, Sparkles, Terminal, Code2 } from "lucide-react";
+import { AlertCircle, X, Sparkles, Code2 } from "lucide-react";
 
 export default function CodeDebugPage() {
   const [code, setCode] = useState("");
@@ -128,98 +128,79 @@ export default function CodeDebugPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#070a12] text-zinc-100 selection:bg-sky-500/30 selection:text-sky-200">
-      {/* Header */}
-      <Header
-        status={status}
-        historyCount={historyItems.length}
-        onOpenSettings={() => setIsStatusOpen(true)}
-        onToggleHistory={() => setIsHistoryOpen(!isHistoryOpen)}
-        onNewAnalysis={handleNewAnalysis}
-        isHistoryOpen={isHistoryOpen}
-        activePage="code"
-      />
-
-      {/* Main Content */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Hero Title Banner */}
-        <div className="text-center space-y-2 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono mb-1">
-            <Code2 className="w-3.5 h-3.5" />
-            <span>Code Doctor &amp; Snippet Debugger</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
-            Detect &amp; Fix Code Snippet Bugs
-          </h1>
-          <p className="text-sm text-zinc-400">
-            Select your language, paste your code snippet, and FixIt pinpoints the syntax error, type mismatch, or logic flaw and writes the corrected replacement code.
-          </p>
+    <AppShell
+      activePage="code"
+      status={status}
+      historyCount={historyItems.length}
+      onOpenSettings={() => setIsStatusOpen(true)}
+      onToggleHistory={() => setIsHistoryOpen(!isHistoryOpen)}
+      onNewAnalysis={handleNewAnalysis}
+      isHistoryOpen={isHistoryOpen}
+    >
+      {/* Hero Title Banner */}
+      <div className="text-center space-y-2 max-w-2xl mx-auto">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-700 dark:text-indigo-400 text-xs font-mono mb-1 font-semibold">
+          <Code2 className="w-3.5 h-3.5" />
+          <span>Code Doctor &amp; Snippet Debugger</span>
         </div>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2">
+          Detect &amp; Fix Code Snippet Bugs
+        </h1>
+        <p className="text-sm text-slate-600 dark:text-zinc-400">
+          Select your language, paste your code snippet, and FixIt pinpoints the syntax error, type mismatch, or logic flaw and writes the corrected replacement code.
+        </p>
+      </div>
 
-        {/* API Error Alert */}
-        {apiError && (
-          <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-start justify-between gap-3 text-sm text-rose-200 shadow-lg animate-in fade-in duration-200">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <span className="font-semibold text-rose-300">Code Analysis Error</span>
-                <p className="text-xs text-rose-200/90 leading-relaxed">{apiError}</p>
-              </div>
+      {/* API Error Alert */}
+      {apiError && (
+        <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-500/40 flex items-start justify-between gap-3 text-sm text-rose-900 dark:text-rose-200 shadow-md animate-in fade-in duration-200">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <span className="font-semibold text-rose-950 dark:text-rose-300">Code Analysis Error</span>
+              <p className="text-xs text-rose-800 dark:text-rose-200/90 leading-relaxed">{apiError}</p>
             </div>
-            <button
-              onClick={() => setApiError(null)}
-              className="p-1 text-rose-400 hover:text-rose-200 rounded hover:bg-rose-500/20"
-              title="Dismiss error"
-            >
-              <X className="w-4 h-4" />
-            </button>
           </div>
-        )}
+          <button
+            onClick={() => setApiError(null)}
+            className="p-1 text-rose-600 dark:text-rose-400 hover:text-rose-900 dark:hover:text-rose-200 rounded hover:bg-rose-100 dark:hover:bg-rose-500/20 cursor-pointer"
+            title="Dismiss error"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
-        {/* Code Input Card */}
-        <section className="glass-panel p-5 sm:p-6 rounded-2xl shadow-xl space-y-4">
-          <CodeInput
-            code={code}
-            onChangeCode={setCode}
-            language={language}
-            onChangeLanguage={setLanguage}
-            additionalContext={additionalContext}
-            onChangeAdditionalContext={setAdditionalContext}
-            onAnalyze={handleAnalyzeCode}
-            isLoading={isLoading}
-            onClear={() => {
-              setCode("");
-              setAdditionalContext("");
-            }}
-          />
+      {/* Code Input Card */}
+      <section className="glass-panel p-5 sm:p-6 rounded-2xl shadow-xl space-y-4">
+        <CodeInput
+          code={code}
+          onChangeCode={setCode}
+          language={language}
+          onChangeLanguage={setLanguage}
+          additionalContext={additionalContext}
+          onChangeAdditionalContext={setAdditionalContext}
+          onAnalyze={handleAnalyzeCode}
+          isLoading={isLoading}
+          onClear={() => {
+            setCode("");
+            setAdditionalContext("");
+          }}
+        />
+      </section>
+
+      {/* Code Result */}
+      {result && (
+        <section className="space-y-4 pt-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+              Bug Diagnosis &amp; Corrected Code
+            </h2>
+          </div>
+          <CodeResult result={result} originalCode={code} />
         </section>
-
-        {/* Code Result */}
-        {result && (
-          <section className="space-y-4 pt-2">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-sky-400" />
-              <h2 className="text-lg font-bold text-white tracking-tight">
-                Bug Diagnosis &amp; Corrected Code
-              </h2>
-            </div>
-            <CodeResult result={result} originalCode={code} />
-          </section>
-        )}
-      </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-white/5 py-6 px-4 text-center text-xs text-zinc-500">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 font-mono">
-            <Terminal className="w-3.5 h-3.5 text-sky-400" />
-            <span>FixIt • Code Doctor &amp; Linux Error Diagnostic</span>
-          </div>
-          <div className="text-zinc-500 text-[11px]">
-            Safety First • Always review code modifications before deploying
-          </div>
-        </div>
-      </footer>
+      )}
 
       {/* Code Doctor History Sidebar */}
       <CodeDebugHistoryPanel
@@ -238,6 +219,6 @@ export default function CodeDebugPage() {
         onClose={() => setIsStatusOpen(false)}
         status={status}
       />
-    </div>
+    </AppShell>
   );
 }

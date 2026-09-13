@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Header } from "@/components/Header";
+import { AppShell } from "@/components/AppShell";
 import { CliCopilotInput } from "@/components/CliCopilotInput";
 import { CliCopilotResult } from "@/components/CliCopilotResult";
 import { StatusModal } from "@/components/StatusModal";
 import { CliCopilotRequest, CliCopilotResponse, AIStatusResponse, SupportedOS, SupportedShell } from "@/types";
-import { AlertCircle, X, Bot, Terminal } from "lucide-react";
+import { AlertCircle, X, Bot } from "lucide-react";
 
 export default function CliCopilotPage() {
   const [query, setQuery] = useState("");
@@ -72,78 +72,62 @@ export default function CliCopilotPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#070a12] text-zinc-100 selection:bg-amber-500/30 selection:text-amber-200">
-      <Header
-        status={status}
-        onOpenSettings={() => setIsStatusOpen(true)}
-        onNewAnalysis={handleReset}
-        activePage="cli"
-      />
-
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Title Banner */}
-        <div className="text-center space-y-2 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono mb-1">
-            <Bot className="w-3.5 h-3.5" />
-            <span>CLI Copilot • Natural Language to Shell</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
-            Describe What You Want to Do
-          </h1>
-          <p className="text-sm text-zinc-400">
-            Type your intent in plain English and FixIt generates the exact, tested shell command with safety ratings and flag breakdowns.
-          </p>
+    <AppShell
+      activePage="cli"
+      status={status}
+      onOpenSettings={() => setIsStatusOpen(true)}
+      onNewAnalysis={handleReset}
+    >
+      {/* Title Banner */}
+      <div className="text-center space-y-2 max-w-2xl mx-auto">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-mono mb-1 font-semibold">
+          <Bot className="w-3.5 h-3.5" />
+          <span>CLI Copilot • Natural Language to Shell</span>
         </div>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2">
+          Describe What You Want to Do
+        </h1>
+        <p className="text-sm text-slate-600 dark:text-zinc-400">
+          Type your intent in plain English and FixIt generates the exact, tested shell command with safety ratings and flag breakdowns.
+        </p>
+      </div>
 
-        {/* Error Alert */}
-        {apiError && (
-          <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-start justify-between gap-3 text-sm text-rose-200">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-              <p className="text-xs text-rose-200/90 leading-relaxed">{apiError}</p>
-            </div>
-            <button onClick={() => setApiError(null)} className="p-1 text-rose-400 hover:text-rose-200">
-              <X className="w-4 h-4" />
-            </button>
+      {/* Error Alert */}
+      {apiError && (
+        <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-500/40 flex items-start justify-between gap-3 text-sm text-rose-900 dark:text-rose-200 shadow-md">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+            <p className="text-xs text-rose-800 dark:text-rose-200/90 leading-relaxed">{apiError}</p>
           </div>
-        )}
+          <button onClick={() => setApiError(null)} className="p-1 text-rose-600 dark:text-rose-400 hover:text-rose-900 dark:hover:text-rose-200 cursor-pointer">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
-        {/* Input Card */}
-        <section className="glass-panel p-5 sm:p-6 rounded-2xl shadow-xl space-y-4">
-          <CliCopilotInput
-            query={query}
-            onChangeQuery={setQuery}
-            os={os}
-            shell={shell}
-            onChangeOS={setOS}
-            onChangeShell={setShell}
-            onGenerate={handleGenerate}
-            isLoading={isLoading}
-            onClear={handleReset}
-          />
+      {/* Input Card */}
+      <section className="glass-panel p-5 sm:p-6 rounded-2xl shadow-xl space-y-4">
+        <CliCopilotInput
+          query={query}
+          onChangeQuery={setQuery}
+          os={os}
+          shell={shell}
+          onChangeOS={setOS}
+          onChangeShell={setShell}
+          onGenerate={handleGenerate}
+          isLoading={isLoading}
+          onClear={handleReset}
+        />
+      </section>
+
+      {/* Result Card */}
+      {result && (
+        <section className="space-y-4 pt-2">
+          <CliCopilotResult result={result} />
         </section>
-
-        {/* Result Card */}
-        {result && (
-          <section className="space-y-4 pt-2">
-            <CliCopilotResult result={result} />
-          </section>
-        )}
-      </main>
-
-      <footer className="w-full border-t border-white/5 py-6 px-4 text-center text-xs text-zinc-500">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 font-mono">
-            <Terminal className="w-3.5 h-3.5 text-amber-400" />
-            <span>FixIt • CLI Copilot</span>
-          </div>
-          <div className="text-zinc-500 text-[11px]">
-            Safety First • Commands are for manual review only
-          </div>
-        </div>
-      </footer>
+      )}
 
       <StatusModal isOpen={isStatusOpen} onClose={() => setIsStatusOpen(false)} status={status} />
-    </div>
+    </AppShell>
   );
 }

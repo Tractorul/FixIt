@@ -210,16 +210,16 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-300">
       {/* Top Banner with Technology & Actions */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-gradient-to-r from-sky-950/30 via-zinc-900/60 to-zinc-950/80 border border-sky-500/20">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-gradient-to-r from-sky-50 via-slate-50 to-white dark:from-sky-950/30 dark:via-zinc-900/60 dark:to-zinc-950/80 border border-sky-200 dark:border-sky-500/20 shadow-xs dark:shadow-none">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400">
+          <div className="p-2 rounded-lg bg-sky-100 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 text-sky-600 dark:text-sky-400">
             <Cpu className="w-4 h-4" />
           </div>
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-zinc-400 font-mono">
+            <div className="text-[11px] uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-mono font-medium">
               Detected Ecosystem
             </div>
-            <div className="text-sm font-semibold text-zinc-100 font-mono">
+            <div className="text-sm font-semibold text-slate-900 dark:text-zinc-100 font-mono">
               {result.technology || "Linux System"}
             </div>
           </div>
@@ -234,10 +234,10 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
               openWithContext(contextSummary, "Can you explain this diagnosis in more detail and help me troubleshoot further?");
             }}
             type="button"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border bg-sky-500/15 hover:bg-sky-500/25 border-sky-500/40 text-sky-300 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border bg-sky-100 hover:bg-sky-200 dark:bg-sky-500/15 dark:hover:bg-sky-500/25 border-sky-300 dark:border-sky-500/40 text-sky-800 dark:text-sky-300 transition-colors"
             title="Open Gemini AI copilot with this error context"
           >
-            <MessageSquare className="w-3.5 h-3.5 text-sky-400" />
+            <MessageSquare className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
             <span>Ask Gemini</span>
           </button>
 
@@ -246,19 +246,19 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
             type="button"
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
               downloadedScript
-                ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
-                : "bg-white/5 hover:bg-white/10 border-white/10 text-zinc-300 hover:text-white"
+                ? "bg-emerald-100 dark:bg-emerald-500/20 border-emerald-300 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-300"
+                : "bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white"
             }`}
             title="Export safe bash script with confirmation safeguards (.sh)"
           >
             {downloadedScript ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Downloaded .sh</span>
               </>
             ) : (
               <>
-                <Download className="w-3.5 h-3.5 text-sky-400" />
+                <Download className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
                 <span>Export .sh</span>
               </>
             )}
@@ -269,19 +269,19 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
             type="button"
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
               downloadedAnsible
-                ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
-                : "bg-white/5 hover:bg-white/10 border-white/10 text-zinc-300 hover:text-white"
+                ? "bg-emerald-100 dark:bg-emerald-500/20 border-emerald-300 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-300"
+                : "bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white"
             }`}
             title="Export Ansible playbook (.yml)"
           >
             {downloadedAnsible ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Downloaded .yml</span>
               </>
             ) : (
               <>
-                <Download className="w-3.5 h-3.5 text-indigo-400" />
+                <Download className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                 <span>Export Ansible</span>
               </>
             )}
@@ -292,19 +292,19 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
             type="button"
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
               copiedAll
-                ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
-                : "bg-white/5 hover:bg-white/10 border-white/10 text-zinc-300 hover:text-white"
+                ? "bg-emerald-100 dark:bg-emerald-500/20 border-emerald-300 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-300"
+                : "bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white"
             }`}
             title="Copy full analysis as formatted Markdown"
           >
             {copiedAll ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Copied Markdown!</span>
               </>
             ) : (
               <>
-                <Share2 className="w-3.5 h-3.5 text-zinc-400" />
+                <Share2 className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />
                 <span>Markdown</span>
               </>
             )}
@@ -315,19 +315,19 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
             type="button"
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
               copiedJson
-                ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
-                : "bg-white/5 hover:bg-white/10 border-white/10 text-zinc-300 hover:text-white"
+                ? "bg-emerald-100 dark:bg-emerald-500/20 border-emerald-300 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-300"
+                : "bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white"
             }`}
             title="Copy raw JSON analysis"
           >
             {copiedJson ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Copied JSON!</span>
               </>
             ) : (
               <>
-                <FileText className="w-3.5 h-3.5 text-zinc-400" />
+                <FileText className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />
                 <span>JSON</span>
               </>
             )}
@@ -338,35 +338,35 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
       {/* Grid of Core Insights: What Happened & Why It Happened */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* What Happened Card */}
-        <div className="rounded-xl bg-[#0c1220]/90 border border-white/10 p-5 space-y-2.5 shadow-lg">
-          <div className="flex items-center gap-2 text-sky-400 font-semibold text-sm">
-            <AlertCircle className="w-4 h-4 text-sky-400 shrink-0" />
+        <div className="rounded-xl bg-white dark:bg-[#0c1220]/90 border border-slate-200 dark:border-white/10 p-5 space-y-2.5 shadow-xs dark:shadow-lg">
+          <div className="flex items-center gap-2 text-sky-600 dark:text-sky-400 font-semibold text-sm">
+            <AlertCircle className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
             <h3>What happened</h3>
           </div>
-          <p className="text-sm text-zinc-200 leading-relaxed font-normal">
+          <p className="text-sm text-slate-700 dark:text-zinc-200 leading-relaxed font-normal">
             {result.summary}
           </p>
         </div>
 
         {/* Why It Happened Card */}
-        <div className="rounded-xl bg-[#0c1220]/90 border border-white/10 p-5 space-y-2.5 shadow-lg">
-          <div className="flex items-center gap-2 text-indigo-400 font-semibold text-sm">
-            <HelpCircle className="w-4 h-4 text-indigo-400 shrink-0" />
+        <div className="rounded-xl bg-white dark:bg-[#0c1220]/90 border border-slate-200 dark:border-white/10 p-5 space-y-2.5 shadow-xs dark:shadow-lg">
+          <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-sm">
+            <HelpCircle className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
             <h3>Why it happened</h3>
           </div>
-          <p className="text-sm text-zinc-300 leading-relaxed font-normal">
+          <p className="text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-normal">
             {result.cause}
           </p>
         </div>
       </div>
 
-        {/* Most Likely Fix Card */}
-      <div className="rounded-xl bg-[#0c1220]/90 border border-emerald-500/20 p-5 space-y-3 shadow-lg">
-        <div className="flex items-center gap-2 text-emerald-400 font-semibold text-sm">
-          <Wrench className="w-4 h-4 text-emerald-400 shrink-0" />
+      {/* Most Likely Fix Card */}
+      <div className="rounded-xl bg-white dark:bg-[#0c1220]/90 border border-emerald-200 dark:border-emerald-500/20 p-5 space-y-3 shadow-xs dark:shadow-lg">
+        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold text-sm">
+          <Wrench className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <h3>Most likely fix</h3>
         </div>
-        <p className="text-sm text-zinc-200 leading-relaxed">
+        <p className="text-sm text-slate-700 dark:text-zinc-200 leading-relaxed">
           {result.fix}
         </p>
       </div>
@@ -375,21 +375,21 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
       {result.commands && result.commands.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between px-1">
-            <div className="flex items-center gap-2 text-zinc-200 font-semibold text-sm">
-              <Terminal className="w-4 h-4 text-sky-400" />
+            <div className="flex items-center gap-2 text-slate-800 dark:text-zinc-200 font-semibold text-sm">
+              <Terminal className="w-4 h-4 text-sky-500 dark:text-sky-400" />
               <h3>Commands to review & copy</h3>
             </div>
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={copyAllCommandsOnly}
-                className="text-xs text-zinc-400 hover:text-zinc-200 flex items-center gap-1 transition-colors"
+                className="text-xs text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-200 flex items-center gap-1 transition-colors"
                 title="Copy all commands as a block"
               >
                 {copiedCommands ? (
                   <>
-                    <Check className="w-3 h-3 text-emerald-400" />
-                    <span className="text-emerald-400">Copied all!</span>
+                    <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                    <span className="text-emerald-600 dark:text-emerald-400">Copied all!</span>
                   </>
                 ) : (
                   <>
@@ -398,7 +398,7 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
                   </>
                 )}
               </button>
-              <span className="text-[11px] text-zinc-500 hidden sm:inline">
+              <span className="text-[11px] text-slate-400 dark:text-zinc-500 hidden sm:inline">
                 • Manual review only
               </span>
             </div>
@@ -414,15 +414,15 @@ ${c.isDangerous ? "      # CAUTION: Potentially destructive task\n" : ""}`
 
       {/* What to try next */}
       {result.nextSteps && result.nextSteps.length > 0 && (
-        <div className="rounded-xl bg-[#0c1220]/90 border border-white/10 p-5 space-y-3 shadow-lg">
-          <div className="flex items-center gap-2 text-amber-400 font-semibold text-sm">
-            <ListChecks className="w-4 h-4 text-amber-400 shrink-0" />
+        <div className="rounded-xl bg-white dark:bg-[#0c1220]/90 border border-slate-200 dark:border-white/10 p-5 space-y-3 shadow-xs dark:shadow-lg">
+          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold text-sm">
+            <ListChecks className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
             <h3>What to try next</h3>
           </div>
-          <ul className="space-y-2 text-sm text-zinc-300">
+          <ul className="space-y-2 text-sm text-slate-700 dark:text-zinc-300">
             {result.nextSteps.map((step, idx) => (
               <li key={idx} className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400/80 mt-2 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400/80 mt-2 shrink-0"></span>
                 <span className="leading-relaxed">{step}</span>
               </li>
             ))}

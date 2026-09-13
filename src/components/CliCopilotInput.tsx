@@ -48,12 +48,12 @@ export function CliCopilotInput({
     <div className="space-y-4">
       {/* Sample Quick Prompts */}
       <div className="space-y-1.5">
-        <div className="flex items-center justify-between text-xs text-zinc-400">
-          <span className="flex items-center gap-1.5 text-zinc-400">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+        <div className="flex items-center justify-between text-xs text-slate-600 dark:text-zinc-400 font-medium">
+          <span className="flex items-center gap-1.5 text-slate-700 dark:text-zinc-400">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             Quick Examples
           </span>
-          <span className="text-[11px] text-zinc-500 hidden sm:inline">
+          <span className="text-[11px] text-slate-500 dark:text-zinc-500 hidden sm:inline font-mono">
             Click to load realistic admin command queries
           </span>
         </div>
@@ -63,7 +63,7 @@ export function CliCopilotInput({
               key={sample}
               type="button"
               onClick={() => onChangeQuery(sample)}
-              className="text-xs px-2.5 py-1 rounded-md bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/5 hover:border-white/15 transition-all text-left font-mono"
+              className="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 border border-slate-200 dark:bg-zinc-900/90 dark:hover:bg-zinc-800 dark:text-zinc-300 dark:hover:text-white dark:border-white/5 transition-all text-left font-mono cursor-pointer"
             >
               {sample}
             </button>
@@ -80,7 +80,7 @@ export function CliCopilotInput({
             onChange={(e) => onChangeQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type in plain English what you want to do... (e.g. Find all files modified today, kill port 5432)"
-            className="w-full bg-[#05080f] border border-white/10 focus:border-amber-500/50 rounded-xl px-4 py-3.5 text-sm font-mono text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
+            className="w-full bg-slate-50 dark:bg-[#05080f] border border-slate-200 dark:border-white/10 focus:border-amber-500 rounded-xl px-4 py-3.5 text-sm font-mono text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:outline-none"
             disabled={isLoading}
           />
         </div>
@@ -99,9 +99,9 @@ export function CliCopilotInput({
         type="button"
         onClick={onGenerate}
         disabled={isLoading || !query.trim()}
-        className={`w-full flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all shadow-lg ${
+        className={`w-full flex items-center justify-center gap-2.5 py-3.5 px-6 rounded-xl font-semibold text-sm transition-all shadow-lg cursor-pointer ${
           isLoading || !query.trim()
-            ? "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-white/5"
+            ? "bg-slate-200 text-slate-400 dark:bg-zinc-800 dark:text-zinc-500 cursor-not-allowed border border-transparent dark:border-white/5"
             : "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white border border-amber-400/30 hover:shadow-amber-500/20"
         }`}
       >

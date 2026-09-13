@@ -51,11 +51,11 @@ export function KeyboardShortcutPanel() {
       {/* Trigger button — fixed bottom-left */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="fixed bottom-4 left-4 z-50 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900/90 border border-white/10 hover:border-white/20 text-zinc-400 hover:text-zinc-200 text-xs font-mono transition-all shadow-lg"
+        className="fixed bottom-4 left-4 z-50 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 text-xs font-mono transition-all shadow-md dark:shadow-lg cursor-pointer"
         title="Keyboard shortcuts (?)"
         aria-label="Keyboard shortcuts"
       >
-        <Keyboard className="w-3.5 h-3.5" />
+        <Keyboard className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
         <span className="hidden sm:inline">Shortcuts</span>
       </button>
 
@@ -63,16 +63,16 @@ export function KeyboardShortcutPanel() {
       {isOpen && (
         <div
           ref={panelRef}
-          className="fixed bottom-14 left-4 z-50 w-72 bg-[#0d1322] border border-white/15 rounded-xl shadow-2xl p-4 animate-in slide-in-from-bottom-2 fade-in duration-150"
+          className="fixed bottom-14 left-4 z-50 w-72 bg-white dark:bg-[#0d1322] border border-slate-200 dark:border-white/15 rounded-xl shadow-2xl p-4 animate-in slide-in-from-bottom-2 fade-in duration-150 text-slate-900 dark:text-zinc-100"
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Keyboard className="w-3.5 h-3.5 text-sky-400" />
-              <span className="text-xs font-semibold text-zinc-200">Keyboard Shortcuts</span>
+              <Keyboard className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+              <span className="text-xs font-semibold text-slate-900 dark:text-zinc-200">Keyboard Shortcuts</span>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-0.5 text-zinc-500 hover:text-zinc-300 transition-colors"
+              className="p-0.5 text-slate-400 hover:text-slate-700 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -80,15 +80,15 @@ export function KeyboardShortcutPanel() {
           <div className="space-y-2.5">
             {shortcuts.map(({ keys, description }) => (
               <div key={description} className="flex items-center justify-between gap-2">
-                <span className="text-xs text-zinc-400">{description}</span>
+                <span className="text-xs text-slate-600 dark:text-zinc-400">{description}</span>
                 <div className="flex items-center gap-1 shrink-0">
                   {keys.map((key, i) => (
                     <React.Fragment key={key}>
-                      <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-zinc-300 text-[11px] font-mono border border-white/10">
+                      <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-zinc-300 text-[11px] font-mono border border-slate-200 dark:border-white/10">
                         {key}
                       </kbd>
                       {i < keys.length - 1 && (
-                        <span className="text-zinc-600 text-[10px]">+</span>
+                        <span className="text-slate-400 dark:text-zinc-600 text-[10px]">+</span>
                       )}
                     </React.Fragment>
                   ))}
