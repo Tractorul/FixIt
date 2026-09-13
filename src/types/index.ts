@@ -81,3 +81,12 @@ export interface AIStatusResponse {
     error?: string;
   };
 }
+
+export interface CodeDebugHistoryItem {
+  id: string;
+  timestamp: number;
+  title: string;
+  language: string;
+  rawCode: string;
+  result: CodeDebugResponse;
+}

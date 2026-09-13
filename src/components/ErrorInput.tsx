@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, DragEvent, ChangeEvent } from "react";
+import React, { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
 import {
   Sparkles,
   UploadCloud,
@@ -13,6 +13,15 @@ import {
 } from "lucide-react";
 import { SupportedOS, SupportedShell } from "@/types";
 import { EnvironmentSelector } from "./EnvironmentSelector";
+
+const ERROR_LOADING_MESSAGES = [
+  "Reading error context...",
+  "Detecting technology stack...",
+  "Identifying root cause...",
+  "Generating safe fix...",
+  "Reviewing command safety...",
+  "Preparing diagnostic report...",
+];
 
 interface ErrorInputProps {
   errorText: string;
@@ -102,6 +111,17 @@ export function ErrorInput({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
+
+  useEffect(() => {
+    if (!isLoading) return;
+    const timer = setInterval(() => {
+      setLoadingMsgIdx((prev) => (prev + 1) % ERROR_LOADING_MESSAGES.length);
+    }, 1800);
+    return () => clearInterval(timer);
+  }, [isLoading]);
+
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -299,7 +319,9 @@ export function ErrorInput({
         {isLoading ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>Diagnosing Error & Finding Safest Fix...</span>
+            <span key={loadingMsgIdx} className="transition-opacity duration-300 animate-in fade-in">
+              {ERROR_LOADING_MESSAGES[loadingMsgIdx]}
+            </span>
           </>
         ) : (
           <>

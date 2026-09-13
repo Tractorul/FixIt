@@ -4,27 +4,26 @@ import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { Header } from "@/components/Header";
 import { CodeInput } from "@/components/CodeInput";
 import { CodeResult } from "@/components/CodeResult";
-import { HistoryPanel } from "@/components/HistoryPanel";
+import { CodeDebugHistoryPanel } from "@/components/CodeDebugHistoryPanel";
 import { StatusModal } from "@/components/StatusModal";
 import {
   CodeDebugRequest,
   CodeDebugResponse,
   SupportedLanguage,
   AIStatusResponse,
+  CodeDebugHistoryItem,
 } from "@/types";
 import {
-  removeHistoryItem,
-  clearAllHistory,
-  subscribeHistory,
-  getHistorySnapshot,
-  getHistoryServerSnapshot,
+  saveCodeDebugHistoryItem,
+  removeCodeDebugHistoryItem,
+  clearAllCodeDebugHistory,
+  subscribeCodeDebugHistory,
+  getCodeDebugSnapshot,
+  getCodeDebugServerSnapshot,
 } from "@/lib/storage";
-import { AlertCircle, X, Sparkles, Terminal, Code2, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { AlertCircle, X, Sparkles, Terminal, Code2 } from "lucide-react";
 
 export default function CodeDebugPage() {
-  const router = useRouter();
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState<SupportedLanguage>("Python");
   const [additionalContext, setAdditionalContext] = useState("");
@@ -32,14 +31,15 @@ export default function CodeDebugPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [result, setResult] = useState<CodeDebugResponse | null>(null);
+  const [selectedHistoryId, setSelectedHistoryId] = useState<string | undefined>();
 
   const [status, setStatus] = useState<AIStatusResponse | null>(null);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const historyItems = useSyncExternalStore(
-    subscribeHistory,
-    getHistorySnapshot,
-    getHistoryServerSnapshot
+    subscribeCodeDebugHistory,
+    getCodeDebugSnapshot,
+    getCodeDebugServerSnapshot
   );
 
   useEffect(() => {
@@ -99,6 +99,10 @@ export default function CodeDebugPage() {
       }
 
       setResult(data);
+
+      // Save to Code Doctor history
+      const updated = saveCodeDebugHistoryItem(code.trim(), data, language);
+      setSelectedHistoryId(updated[0]?.id);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to communicate with code analysis server.";
       setApiError(msg);
@@ -107,11 +111,20 @@ export default function CodeDebugPage() {
     }
   };
 
+  const handleSelectHistory = (item: CodeDebugHistoryItem) => {
+    setCode(item.rawCode);
+    setLanguage(item.language as SupportedLanguage);
+    setResult(item.result);
+    setSelectedHistoryId(item.id);
+    setApiError(null);
+  };
+
   const handleNewAnalysis = () => {
     setCode("");
     setResult(null);
     setAdditionalContext("");
     setApiError(null);
+    setSelectedHistoryId(undefined);
   };
 
   return (
@@ -129,25 +142,14 @@ export default function CodeDebugPage() {
 
       {/* Main Content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Navigation Breadcrumb / Switcher */}
-        <div className="flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-sky-300 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Error Log Diagnosis</span>
-          </Link>
-        </div>
-
         {/* Hero Title Banner */}
         <div className="text-center space-y-2 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono mb-1">
             <Code2 className="w-3.5 h-3.5" />
-            <span>Code Doctor & Snippet Debugger</span>
+            <span>Code Doctor &amp; Snippet Debugger</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
-            Detect & Fix Code Snippet Bugs
+            Detect &amp; Fix Code Snippet Bugs
           </h1>
           <p className="text-sm text-zinc-400">
             Select your language, paste your code snippet, and FixIt pinpoints the syntax error, type mismatch, or logic flaw and writes the corrected replacement code.
@@ -198,7 +200,7 @@ export default function CodeDebugPage() {
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-sky-400" />
               <h2 className="text-lg font-bold text-white tracking-tight">
-                Bug Diagnosis & Corrected Code
+                Bug Diagnosis &amp; Corrected Code
               </h2>
             </div>
             <CodeResult result={result} originalCode={code} />
@@ -211,7 +213,7 @@ export default function CodeDebugPage() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 font-mono">
             <Terminal className="w-3.5 h-3.5 text-sky-400" />
-            <span>FixIt • Code Doctor & Linux Error Diagnostic</span>
+            <span>FixIt • Code Doctor &amp; Linux Error Diagnostic</span>
           </div>
           <div className="text-zinc-500 text-[11px]">
             Safety First • Always review code modifications before deploying
@@ -219,16 +221,15 @@ export default function CodeDebugPage() {
         </div>
       </footer>
 
-      {/* History Sidebar */}
-      <HistoryPanel
+      {/* Code Doctor History Sidebar */}
+      <CodeDebugHistoryPanel
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
         items={historyItems}
-        onSelect={(item) => {
-          router.push(`/?historyId=${item.id}`);
-        }}
-        onDelete={removeHistoryItem}
-        onClearAll={clearAllHistory}
+        onSelect={handleSelectHistory}
+        onDelete={removeCodeDebugHistoryItem}
+        onClearAll={clearAllCodeDebugHistory}
+        selectedId={selectedHistoryId}
       />
 
       {/* AI Status Modal */}

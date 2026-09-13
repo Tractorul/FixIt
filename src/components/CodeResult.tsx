@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { CodeDebugResponse } from "@/types";
 import { CommandCard } from "./CommandCard";
+import { useToast } from "@/components/Toast";
+import { HighlightedCode } from "./HighlightedCode";
 
 interface CodeResultProps {
   result: CodeDebugResponse;
@@ -27,6 +29,7 @@ export function CodeResult({ result, originalCode }: CodeResultProps) {
   const [copiedMarkdown, setCopiedMarkdown] = useState(false);
   const [downloadedFile, setDownloadedFile] = useState(false);
   const [activeTab, setActiveTab] = useState<"fixed" | "comparison">("fixed");
+  const { showToast } = useToast();
 
   const getFileExtension = (lang: string): string => {
     switch (lang.toLowerCase()) {
@@ -61,6 +64,7 @@ export function CodeResult({ result, originalCode }: CodeResultProps) {
     try {
       await navigator.clipboard.writeText(result.fixedCode);
       setCopiedFixed(true);
+      showToast("Fixed code copied!");
       setTimeout(() => setCopiedFixed(false), 2000);
     } catch {
       // ignore
@@ -94,6 +98,7 @@ ${result.bestPractices.map((b) => `- ${b}`).join("\n")}
     try {
       await navigator.clipboard.writeText(md);
       setCopiedMarkdown(true);
+      showToast("Markdown report copied!");
       setTimeout(() => setCopiedMarkdown(false), 2000);
     } catch {
       // ignore
@@ -272,9 +277,9 @@ ${result.bestPractices.map((b) => `- ${b}`).join("\n")}
 
         {activeTab === "fixed" ? (
           <div className="p-4 bg-[#05080f]">
-            <pre className="p-4 rounded-lg bg-black/60 border border-white/10 font-mono text-sm text-emerald-200 overflow-x-auto leading-relaxed select-all">
-              <code>{result.fixedCode}</code>
-            </pre>
+            <div className="p-4 rounded-lg bg-black/60 border border-white/10 select-all">
+              <HighlightedCode code={result.fixedCode} language={result.language} />
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10 bg-[#05080f]">
@@ -282,17 +287,17 @@ ${result.bestPractices.map((b) => `- ${b}`).join("\n")}
               <span className="text-xs font-mono font-semibold text-rose-400 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-rose-400"></span> Before (Original)
               </span>
-              <pre className="p-3 rounded-lg bg-black/60 border border-rose-500/20 font-mono text-xs text-rose-200/90 overflow-x-auto max-h-[300px] leading-relaxed">
-                <code>{originalCode}</code>
-              </pre>
+              <div className="p-3 rounded-lg bg-black/60 border border-rose-500/20 max-h-[300px] overflow-y-auto">
+                <HighlightedCode code={originalCode} language={result.language} />
+              </div>
             </div>
             <div className="p-4 space-y-2">
               <span className="text-xs font-mono font-semibold text-emerald-400 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400"></span> After (Fixed)
               </span>
-              <pre className="p-3 rounded-lg bg-black/60 border border-emerald-500/20 font-mono text-xs text-emerald-200 overflow-x-auto max-h-[300px] leading-relaxed select-all">
-                <code>{result.fixedCode}</code>
-              </pre>
+              <div className="p-3 rounded-lg bg-black/60 border border-emerald-500/20 max-h-[300px] overflow-y-auto select-all">
+                <HighlightedCode code={result.fixedCode} language={result.language} />
+              </div>
             </div>
           </div>
         )}

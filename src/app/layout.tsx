@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ToastProvider } from "@/components/Toast";
+import { KeyboardShortcutPanel } from "@/components/KeyboardShortcutPanel";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +31,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#070a12] text-zinc-100 font-sans">
-        {children}
+        <ToastProvider>
+          {children}
+          <KeyboardShortcutPanel />
+        </ToastProvider>
       </body>
     </html>
   );

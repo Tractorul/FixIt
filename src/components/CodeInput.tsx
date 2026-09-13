@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, DragEvent, ChangeEvent } from "react";
+import React, { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
 import {
   Sparkles,
   UploadCloud,
@@ -11,6 +11,15 @@ import {
   Code2,
 } from "lucide-react";
 import { SupportedLanguage } from "@/types";
+
+const CODE_LOADING_MESSAGES = [
+  "Parsing code structure...",
+  "Detecting language patterns...",
+  "Identifying bugs & type errors...",
+  "Generating corrected code...",
+  "Reviewing best practices...",
+  "Finalizing code report...",
+];
 
 interface CodeInputProps {
   code: string;
@@ -98,6 +107,17 @@ export function CodeInput({
   const [showContextInput, setShowContextInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
+
+  useEffect(() => {
+    if (!isLoading) return;
+    const timer = setInterval(() => {
+      setLoadingMsgIdx((prev) => (prev + 1) % CODE_LOADING_MESSAGES.length);
+    }, 1800);
+    return () => clearInterval(timer);
+  }, [isLoading]);
+
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -324,7 +344,9 @@ export function CodeInput({
         {isLoading ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>Analyzing Code & Constructing Safe Fix...</span>
+            <span key={loadingMsgIdx} className="transition-opacity duration-300 animate-in fade-in">
+              {CODE_LOADING_MESSAGES[loadingMsgIdx]}
+            </span>
           </>
         ) : (
           <>

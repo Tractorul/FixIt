@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { FixItResponse } from "@/types";
 import { CommandCard } from "./CommandCard";
+import { useToast } from "@/components/Toast";
 
 interface AnalysisResultProps {
   result: FixItResponse;
@@ -27,6 +28,7 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
   const [copiedCommands, setCopiedCommands] = useState(false);
   const [downloadedScript, setDownloadedScript] = useState(false);
   const [downloadedAnsible, setDownloadedAnsible] = useState(false);
+  const { showToast } = useToast();
 
   const getConfidenceBadge = (confidence: string) => {
     switch (confidence) {
@@ -86,6 +88,7 @@ ${result.nextSteps.map((step) => `- ${step}`).join("\n")}
     try {
       await navigator.clipboard.writeText(markdown);
       setCopiedAll(true);
+      showToast("Markdown report copied!");
       setTimeout(() => setCopiedAll(false), 2000);
     } catch {
       // ignore
@@ -96,6 +99,7 @@ ${result.nextSteps.map((step) => `- ${step}`).join("\n")}
     try {
       await navigator.clipboard.writeText(JSON.stringify(result, null, 2));
       setCopiedJson(true);
+      showToast("JSON copied to clipboard!");
       setTimeout(() => setCopiedJson(false), 2000);
     } catch {
       // ignore
@@ -107,6 +111,7 @@ ${result.nextSteps.map((step) => `- ${step}`).join("\n")}
     try {
       await navigator.clipboard.writeText(script);
       setCopiedCommands(true);
+      showToast("All commands copied!");
       setTimeout(() => setCopiedCommands(false), 2000);
     } catch {
       // ignore

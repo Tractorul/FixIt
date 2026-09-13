@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Copy, Check, AlertTriangle, ShieldCheck, Info } from "lucide-react";
 import { FixItCommand } from "@/types";
+import { useToast } from "@/components/Toast";
 
 interface CommandCardProps {
   commandItem: FixItCommand;
@@ -11,11 +12,13 @@ interface CommandCardProps {
 
 export function CommandCard({ commandItem, index }: CommandCardProps) {
   const [copied, setCopied] = useState(false);
+  const { showToast } = useToast();
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(commandItem.command);
       setCopied(true);
+      showToast("Command copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // ignore
